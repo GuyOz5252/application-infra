@@ -1,0 +1,38 @@
+---
+description: No blank lines between properties on Options/DTO-style types (C#)
+globs: **/*Options.cs,**/*Dto.cs,**/*Request.cs,**/*Response.cs,**/*Settings.cs
+alwaysApply: false
+---
+
+# Data model property spacing
+
+For **property-bag** types (options, settings, DTOs, API request/response shapes, simple records used only as data carriers), **do not put empty lines between consecutive properties**.
+
+Keep a single blank line before the **first** property only if needed after type declaration / attributes; otherwise keep the body compact.
+
+## Examples
+
+```csharp
+// ❌ BAD
+public sealed class KafkaConsumerOptions
+{
+    public string BootstrapServers { get; set; } = string.Empty;
+
+    public string GroupId { get; set; } = string.Empty;
+
+    public string Topic { get; set; } = string.Empty;
+}
+
+// ✅ GOOD
+public sealed class KafkaConsumerOptions
+{
+    public string BootstrapServers { get; set; } = string.Empty;
+    public string GroupId { get; set; } = string.Empty;
+    public string Topic { get; set; } = string.Empty;
+}
+```
+
+## Scope
+
+- Applies to types in the matched globs that are **mostly auto-properties or simple fields**.
+- **Does not** override intentional spacing in classes with lots of behavior (methods, nested types); those files are usually outside these globs.
