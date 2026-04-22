@@ -74,10 +74,7 @@ public sealed class KafkaProducer<TSerializer> : IEventPublisher, IAsyncDisposab
         }
         catch (Exception exception)
         {
-            _logger.LogDebug(
-                exception,
-                "Kafka producer flush error. ProducerName={ProducerName}",
-                _name);
+            Loggers.KafkaLogger.ProducerFlushError(_logger, exception, _name);
         }
 
         _producer.Dispose();

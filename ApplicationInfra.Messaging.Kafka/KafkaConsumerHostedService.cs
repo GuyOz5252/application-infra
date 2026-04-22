@@ -53,8 +53,8 @@ public sealed class KafkaConsumerHostedService<TEvent, THandler, TDeserializer> 
             .Build();
 
         consumer.Subscribe(_kafkaConsumerOptions.Topic);
-        _logger.LogInformation(
-            "Kafka consumer {ConsumerName} subscribed. Topic={Topic}, GroupId={GroupId}",
+        Loggers.KafkaLogger.ConsumerSubscribed(
+            _logger,
             _name,
             _kafkaConsumerOptions.Topic,
             _kafkaConsumerOptions.Username);
@@ -70,7 +70,7 @@ public sealed class KafkaConsumerHostedService<TEvent, THandler, TDeserializer> 
                 }
                 catch (ConsumeException consumeException)
                 {
-                    _logger.LogError(consumeException, "Kafka consume error. ConsumerName={ConsumerName}", _name);
+                    Loggers.KafkaLogger.ConsumeError(_logger, consumeException, _name);
                     continue;
                 }
 
@@ -93,9 +93,9 @@ public sealed class KafkaConsumerHostedService<TEvent, THandler, TDeserializer> 
                 }
                 catch (Exception exception) when (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogError(
+                    Loggers.KafkaLogger.EventProcessingFailed(
+                        _logger,
                         exception,
-                        "Failed to process Kafka event. ConsumerName={ConsumerName}, Destination={Destination}, Partition={Partition}, Offset={Offset}",
                         _name,
                         result.Topic,
                         result.Partition.Value,
@@ -111,7 +111,7 @@ public sealed class KafkaConsumerHostedService<TEvent, THandler, TDeserializer> 
             }
             catch (Exception exception)
             {
-                _logger.LogDebug(exception, "Error closing Kafka consumer.");
+                Loggers.KafkaLogger.ConsumerCloseError(_logger, exception);
             }
         }
     }
