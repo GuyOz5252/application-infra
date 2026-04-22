@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package appinfra.sample.v1;
+package applicationinfra.sample.v1;
 
-option csharp_namespace = "AppInfra.Sample.Protos";
+option csharp_namespace = "ApplicationInfra.Sample.Protobuf";
 
 message SampleOrderPlaced {
   string order_id = 1;

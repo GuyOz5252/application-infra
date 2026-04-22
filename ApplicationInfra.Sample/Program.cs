@@ -1,7 +1,7 @@
-using ApplicationInfra.Messaging.Kafka.Extensions;
 using ApplicationInfra.Messaging.Abstractions;
-using AppInfra.Sample;
-using AppInfra.Sample.Protos;
+using ApplicationInfra.Messaging.Kafka.Extensions;
+using ApplicationInfra.Sample;
+using ApplicationInfra.Sample.Protobuf;
 using ApplicationInfra.Serialization.Extensions;
 using ApplicationInfra.Serialization.Json;
 using ApplicationInfra.Serialization.Protobuf;

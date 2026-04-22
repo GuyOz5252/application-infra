@@ -1,6 +1,6 @@
 using ApplicationInfra.Messaging.Abstractions;
 using ApplicationInfra.Messaging.Kafka;
-using ApplicationInfra.Sample.Protos;
+using ApplicationInfra.Sample.Protobuf;
 
 namespace ApplicationInfra.Sample;
 
