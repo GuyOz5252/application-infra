@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="ApplicationInfra.Api/ApplicationInfra.Api.csproj" />
+    <Project Path="ApplicationInfra.Messaging.Abstractions/ApplicationInfra.Messaging.Abstractions.csproj" />
+    <Project Path="ApplicationInfra.Messaging.Kafka/ApplicationInfra.Messaging.Kafka.csproj" />
+    <Project Path="ApplicationInfra.Serialization/ApplicationInfra.Serialization.csproj" />
+  </Folder>
+  <Project Path="ApplicationInfra.Sample/ApplicationInfra.Sample.csproj" />
+</Solution>
