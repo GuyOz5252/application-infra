@@ -1,5 +1,5 @@
-using AppInfra.Kafka.Options;
 using AppInfra.Messaging.Abstractions;
+using AppInfra.Messaging.Kafka.Options;
 using AppInfra.Serialization.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AppInfra.Kafka.Extensions;
+namespace AppInfra.Messaging.Kafka.Extensions;
 
 public static class KafkaServiceCollectionExtensions
 {
@@ -35,7 +35,7 @@ public static class KafkaServiceCollectionExtensions
             where TDeserializer : class, IEventDeserializer
         {
             services.AddKeyedScoped<TEventProcessor>(name);
-            services.Configure<KafkaConsumerOptions>(name, configuration.GetSection($"Kafka:Consumer:{name}"));
+            services.Configure<KafkaConsumerOptions>(name, configuration.GetSection($"Kafka:Consumers:{name}"));
             services.AddHostedService(serviceProvider =>
                 new KafkaConsumerHostedService<TEvent, TEventProcessor, TDeserializer>(
                     serviceProvider

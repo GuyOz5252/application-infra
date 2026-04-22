@@ -1,8 +1,6 @@
 namespace AppInfra.Messaging.Abstractions;
 
-public record EventContext(
-    string Topic,
+public sealed record EventContext(
     string? Key,
     IReadOnlyDictionary<string, string> Headers,
-    int? Partition,
-    long? Offset);
+    IReadOnlyDictionary<string, string?> Attributes);

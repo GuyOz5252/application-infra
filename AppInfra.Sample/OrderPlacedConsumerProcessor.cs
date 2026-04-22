@@ -1,3 +1,4 @@
+using AppInfra.Messaging.Kafka;
 using AppInfra.Messaging.Abstractions;
 
 namespace AppInfra.Sample;
@@ -16,12 +17,13 @@ internal sealed class OrderPlacedConsumerProcessor : IEventProcessor<OrderPlaced
         EventContext context,
         CancellationToken cancellationToken)
     {
+        context.Attributes.TryGetValue(KafkaEventContextAttributes.Partition, out var partition);
         _logger.LogInformation(
             "Orders consumer: order {OrderId} at {PlacedAt}; key={MessageKey}, partition={Partition}, headers={HeaderCount}",
             @event.OrderId,
             @event.PlacedAt,
             context.Key,
-            context.Partition,
+            partition,
             context.Headers.Count);
         return Task.CompletedTask;
     }

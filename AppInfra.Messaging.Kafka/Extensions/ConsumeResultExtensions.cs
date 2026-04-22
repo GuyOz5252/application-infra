@@ -1,8 +1,9 @@
+using System.Globalization;
 using System.Text;
 using AppInfra.Messaging.Abstractions;
 using Confluent.Kafka;
 
-namespace AppInfra.Kafka.Extensions;
+namespace AppInfra.Messaging.Kafka.Extensions;
 
 internal static class ConsumeResultExtensions
 {
@@ -17,11 +18,15 @@ internal static class ConsumeResultExtensions
             }
         }
 
+        var attributes = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
+        {
+            [KafkaEventContextAttributes.Partition] = result.Partition.Value.ToString(CultureInfo.InvariantCulture),
+            [KafkaEventContextAttributes.Offset] = result.Offset.Value.ToString(CultureInfo.InvariantCulture),
+        };
+
         return new EventContext(
-            result.Topic,
             result.Message.Key,
             headers,
-            result.Partition.Value,
-            result.Offset.Value);
+            attributes);
     }
 }

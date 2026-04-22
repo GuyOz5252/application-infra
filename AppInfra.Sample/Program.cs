@@ -1,4 +1,4 @@
-using AppInfra.Kafka.Extensions;
+using AppInfra.Messaging.Kafka.Extensions;
 using AppInfra.Messaging.Abstractions;
 using AppInfra.Sample;
 using AppInfra.Serialization.Extensions;

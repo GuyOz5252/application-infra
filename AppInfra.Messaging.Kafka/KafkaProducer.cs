@@ -1,18 +1,18 @@
 using System.Text;
-using AppInfra.Kafka.Options;
 using AppInfra.Messaging.Abstractions;
+using AppInfra.Messaging.Kafka.Options;
 using AppInfra.Serialization.Abstract;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace AppInfra.Kafka;
+namespace AppInfra.Messaging.Kafka;
 
 public sealed class KafkaProducer<TSerializer> : IEventPublisher, IAsyncDisposable
     where TSerializer : class, IEventSerializer
 {
     private readonly ILogger<KafkaProducer<TSerializer>> _logger;
-    private readonly IOptionsSnapshot<KafkaProducerOptions> _optionsSnapshot;
+    private readonly KafkaProducerOptions _kafkaProducerOptions;
     private readonly string _name;
     private readonly TSerializer _serializer;
     private readonly IProducer<string, byte[]> _producer;
@@ -25,7 +25,7 @@ public sealed class KafkaProducer<TSerializer> : IEventPublisher, IAsyncDisposab
         TSerializer serializer)
     {
         _logger = logger;
-        _optionsSnapshot = optionsSnapshot;
+        _kafkaProducerOptions = optionsSnapshot.Get(name);
         _name = name;
         _serializer = serializer;
         _producer = CreateProducer();
@@ -43,8 +43,6 @@ public sealed class KafkaProducer<TSerializer> : IEventPublisher, IAsyncDisposab
     {
         ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
-        var kafkaProducerOptions = _optionsSnapshot.Get(_name);
-
         var bytes = _serializer.Serialize(@event);
         var message = new Message<string, byte[]>
         {
@@ -52,13 +50,14 @@ public sealed class KafkaProducer<TSerializer> : IEventPublisher, IAsyncDisposab
             Headers = BuildHeaders(metadata),
         };
 
-        if (metadata?.Key is not null)
+        var messageKey = metadata?.Key;
+        if (messageKey is not null)
         {
-            message.Key = metadata.Key;
+            message.Key = messageKey;
         }
 
         await _producer
-            .ProduceAsync(kafkaProducerOptions.Topic, message, cancellationToken)
+            .ProduceAsync(_kafkaProducerOptions.Topic, message, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -103,12 +102,11 @@ public sealed class KafkaProducer<TSerializer> : IEventPublisher, IAsyncDisposab
 
     private IProducer<string, byte[]> CreateProducer()
     {
-        var kafkaProducerOptions = _optionsSnapshot.Get(_name);
         var config = new ProducerConfig
         {
-            BootstrapServers = kafkaProducerOptions.BootstrapServers,
-            SaslUsername = kafkaProducerOptions.Username,
-            SaslPassword = kafkaProducerOptions.Password,
+            BootstrapServers = _kafkaProducerOptions.BootstrapServers,
+            SaslUsername = _kafkaProducerOptions.Username,
+            SaslPassword = _kafkaProducerOptions.Password,
             SecurityProtocol = SecurityProtocol.SaslPlaintext,
             SaslMechanism = SaslMechanism.ScramSha256,
         };
